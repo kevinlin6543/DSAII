@@ -11,7 +11,7 @@ int main()
   int lineNum = 0;
   int len;
 
-  hashTable *dictionary = new hashTable(50000);
+  hashTable *dictionary = new hashTable(1973);
 
   std::cout << "Enter name of dictionary: ";
   getline(cin, dict);
