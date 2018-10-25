@@ -16,32 +16,23 @@ int heap::insert(const std::string &id, int key, void *pv)
     return 1;
   if (hashT->contains(id))
     return 2;
-
-
-  node *temp;
-  temp->key = key;
-  temp->id = id;
-  temp->pv = pv;
   size++;
+  data[size].key = key;
+  data[size].id = id;
+  data[size].pv = pv;
   hashT->insert(id, &data[size]);
-  data[size] = *temp;
-
   percolateUp(size);
-
-
   return 0;
 }
 
 int heap::setKey(const std::string &id, int key)
 {
-  std::cerr << "Reaches setkey" << '\n';
-  if(!(hashT->contains(id)))
-    return 1;
-  node *temp = (node *)hashT -> getPointer(id);
+  if(hashT->contains(id))
+  {
+  node *temp = (node *)(hashT -> getPointer(id));
   int tmp = temp -> key;
   temp -> key = key;
-  int p = getPos(temp);
-  std::cerr << "got to set pointer" << '\n';
+  int p = temp - &data[0];
   hashT->setPointer(data[p].id, &data[p]);
 
   if (key > tmp)
@@ -49,77 +40,85 @@ int heap::setKey(const std::string &id, int key)
   if (tmp > key)
     percolateUp(p);
 
-  return 0;
+    return 0;
+  }
+  else
+    return 1;
 }
 
 int heap::deleteMin(std::string *pId, int *pKey, void *ppData)
 {
   if(size == 0)
     return 1;
-  hashT->remove(data[1].id);
   if(pId != nullptr)
     *pId = data[1].id;
   if(pKey != nullptr)
     *pKey = data[1].key;
   if(ppData != nullptr)
     *(void **)ppData = data[1].pv;
-  size--;
+  hashT->remove(data[1].id);
   data[1] = data[size];
+  size-=1;
   percolateDown(1);
   return 0;
 }
 
 int heap::remove(const std::string &id, int *pKey, void *ppData)
 {
-  if(!(hashT->contains(id)))
+  if(hashT->contains(id))
+  {
+    node *temp = (node *)(hashT->getPointer(id));
+    int i = temp - &data[0];
+
+    if(pKey != nullptr)
+      *pKey = temp->key;
+    if(ppData != nullptr)
+      *(void **)ppData = temp -> pv;
+
+    hashT->remove(id);
+    int o = temp -> key;
+    data[i] = data[size--];
+    int n = data[i].key;
+
+
+    if (n < o)
+      percolateUp(i);
+    if (o < n)
+      percolateDown(i);
+    return 0;
+  }
+  else
     return 1;
-  node *temp = (node *)hashT->getPointer(id);
-  int o =temp -> key;
-  int i = temp - &data[0];
-  if(pKey != nullptr)
-    *pKey = o;
-  if(ppData != nullptr)
-    *(void **)ppData = temp -> pv;
-
-  hashT->remove(id);
-  data[i] = data[size--];
-  int n = data[i].key;
-
-  if (n > o)
-    percolateDown(i);
-  if (o > n)
-    percolateUp(i);
-  return 0;
 }
 
-int heap::getPos(node *n)
-{
-  return (n-&data[0]);
-}
 void heap::percolateUp(int i)
 {
   node temp = data[i];
-  int p = i/2;
-  while (i > 1  && data[p].key > temp.key)
+  while (i > 1  && temp.key < data[i/2].key)
   {
-    //int p = getParent(data[i]);
-    data[i] = data[p];
+    data[i] = data[i/2];
     hashT->setPointer(data[i].id, &data[i]);
-    i = p;
-    p = i/2;
+    i /= 2;
   }
   data[i] = temp;
+  hashT-> setPointer(data[i].id, &data[i]);
 }
 
 void heap::percolateDown(int i)
 {
   node temp = data[i];
   int c = 0;
-  while ( (c = 2*i) <= size)
+  int l, r;
+  while ( (2*i) <= size)
   {
-    if (c < size && data[c].key > data[c+1].key)
-      ++c;
-    if (temp.key > data[c].key)
+    l = 2*i;
+    r = l + 1;
+    if (l < size && data[r].key < data[l].key )
+      c = r;
+    else
+      c = l;
+
+    if (data[c].key < temp.key)
     {
       data[i] = data[c];
       hashT->setPointer(data[i].id, &data[i]);

@@ -67,6 +67,7 @@ int main()
       getline(cin, stringTmp);
 
       getInteger("Enter an associated integer key: ", key);
+      std::cerr << "integer key " << key << '\n';
 
       retVal = myHeap1.insert(stringTmp, key);
 
@@ -97,7 +98,7 @@ int main()
       cout << "\nCall to 'delete' returned: " << retVal << endl;
 
       if (retVal == 0) {
-	cout << "\nDeleted item with string id \"" << stringTmp
+	    cout << "\nDeleted item with string id \"" << stringTmp
 	     << "\" and key " << key << endl;
       }
 
