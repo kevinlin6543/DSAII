@@ -1,4 +1,4 @@
-//
+// 
 // This program allows the user to manipulate a binary heap.
 // The program only inserts string ids with associated keys
 // into the heap. The heap class, however, is capable of storing
@@ -67,7 +67,6 @@ int main()
       getline(cin, stringTmp);
 
       getInteger("Enter an associated integer key: ", key);
-      std::cerr << "integer key " << key << '\n';
 
       retVal = myHeap1.insert(stringTmp, key);
 
@@ -82,7 +81,7 @@ int main()
       getline(cin, stringTmp);
 
       getInteger("Enter an associated integer key: ", key);
-      std::cout << "key " << key << '\n';
+
       retVal = myHeap1.setKey(stringTmp, key);
       cout << "\nCall to 'setKey' returned: " << retVal << endl;
 
@@ -98,7 +97,7 @@ int main()
       cout << "\nCall to 'delete' returned: " << retVal << endl;
 
       if (retVal == 0) {
-	    cout << "\nDeleted item with string id \"" << stringTmp
+	cout << "\nDeleted item with string id \"" << stringTmp
 	     << "\" and key " << key << endl;
       }
 

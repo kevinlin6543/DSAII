@@ -15,7 +15,7 @@ int hashTable::insert(const std::string &key, void *pv /*= NULL*/)
   int i = hash(key) % capacity;
   if (contains(key))
     return 1;
-  while (data[i].isOccupied)
+  while (data[i].isOccupied || data[i].isDeleted)
   {
     i++;
     if (i == capacity) // Loops the index back to zero for collisions
@@ -95,9 +95,9 @@ unsigned int hashTable::hash(const std::string &key)
 int hashTable::findPos(const std::string &key)
 {
   int i = hash(key) % capacity;
-  while(data[i].isOccupied)
+  while(data[i].isOccupied || data[i].isDeleted)
   {
-    if (data[i].key.compare(key) == 0)
+    if (data[i].key.compare(key) == 0 && !data[i].isDeleted)
       return i;
     if (i < capacity) // Loops the index back to zero when reaching capacity
       i++;
