@@ -33,16 +33,16 @@ int heap::setKey(const std::string &id, int key)
 {
   if(hashT->contains(id))
   {
-  node *temp = (node *)(hashT -> getPointer(id));
-  int tmp = temp -> key;
-  temp -> key = key;
-  int p = temp - &data[0];
-  hashT->setPointer(data[p].id, &data[p]);
+    node *temp = (node *)(hashT -> getPointer(id));
+    int tmp = temp -> key;
+    temp -> key = key;
+    int p = temp - &data[0];
+    hashT->setPointer(data[p].id, &data[p]);
 
-  if (key > tmp)
-    percolateDown(p);
-  if (tmp > key)
-    percolateUp(p);
+    if (key > tmp)
+      percolateDown(p);
+    if (tmp > key)
+      percolateUp(p);
 
     return 0;
   }
@@ -87,7 +87,6 @@ int heap::remove(const std::string &id, int *pKey, void *ppData)
     data[i] = data[size--];
     int n = data[i].key;
 
-
     if (n < o)
       percolateUp(i);
     if (o < n)
@@ -124,11 +123,10 @@ void heap::percolateDown(int i)
   {
     l = 2*i;
     r = l + 1;
-    if (l < size && data[r].key < data[l].key )
+    if (l < size && data[r].key < data[l].key)
       c = r;
     else
       c = l;
-
     if (data[c].key < temp.key)
     {
       data[i] = data[c];
