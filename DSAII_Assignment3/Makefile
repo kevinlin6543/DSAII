@@ -1,23 +1,15 @@
-useHeap.exe: useHeap.o heap.o hash.o
-	g++ -o useHeap.exe useHeap.o heap.o hash.o
+CXX=g++
+CFLAGS = -c
+DEPS = heap.h hash.h graph.h
 
-useHeap.o: useHeap.cpp
-	g++ -c useHeap.cpp
+%.o: %.cpp $(DEPS)
+	$(CXX) $(CFLAGS) -o $@ $< $(CFLAGS)
 
-heap.o: heap.cpp heap.h
-	g++ -c heap.cpp
-
-hash.o: hash.cpp hash.h
-	g++ -c hash.cpp
+dijkstra.exe: testDijkstra.o heap.o hash.o graph.o
+	$(CXX) -o dijkstra.exe testDijkstra.o heap.o hash.o graph.o
 
 debug:
-	g++ -g -o useHeapDebug.exe useHeap.cpp heap.cpp hash.cpp
+	$(CXX) $(CFLAGS) -g graph.exe heap.cpp hash.cpp graph.cpp
 
 clean:
-	rm -f *.exe *.o *.stackdump *~
-
-backup:
-	test -d backups || mkdir backups
-	cp *.cpp backups
-	cp *.h backups
-	cp Makefile backups
+	rm *.exe *.o *.stackdump *~
