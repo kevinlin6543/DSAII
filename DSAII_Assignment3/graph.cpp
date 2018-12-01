@@ -1,15 +1,12 @@
 #include "graph.h"
 
-using namespace std;
-
-
 graph::graph()
 {
   tableID = new hashTable(100000);
   cap = 0;
 }
 
-void graph::insert(string id, string destID, int cost)
+void graph::insert(std::string id, std::string destID, int cost)
 {
   node *temp, *tempD;
   edge tempEdge;
@@ -20,8 +17,8 @@ void graph::insert(string id, string destID, int cost)
     temp = new node;
     cap++;
     temp -> id = id;
-    temp -> known =false;
     temp -> dist = std::numeric_limits<int>::max();
+    temp -> known = false;
     vertices.push_back(temp);
     tableID->insert(id, temp);
   }
@@ -32,8 +29,8 @@ void graph::insert(string id, string destID, int cost)
     tempD = new node;
     cap++;
     tempD -> id = destID;
-    tempD -> known =false;
     tempD -> dist = std::numeric_limits<int>::max();
+    tempD -> known = false;
     vertices.push_back(tempD);
     tableID->insert(destID, tempD);
   }
@@ -42,7 +39,7 @@ void graph::insert(string id, string destID, int cost)
   temp->adj.push_back(tempEdge);
 }
 
-int graph::dijkstra(std::string &startNode)
+void graph::dijkstra(std::string &startNode)
 {
   node *temp;
   node *start = (node *) tableID -> getPointer(startNode);
@@ -74,7 +71,6 @@ int graph::dijkstra(std::string &startNode)
     }
     temp->known = true;
   }
-  return 1;
 }
 
 void graph::outputGen(std::ofstream &outfile)
@@ -113,7 +109,7 @@ void graph::prompt()
   }
   while(!tableID->contains(startingNode))
   {
-    std::cout << "Enter a valid vertix ID for the starting vertex: ";
+    std::cout << "Enter a valid vertix id for the starting vertex: ";
     std::cin >> startingNode;
   }
 
@@ -122,8 +118,8 @@ void graph::prompt()
   clock_t end = clock();
   double timeDif = ((double)(end-begin))/CLOCKS_PER_SEC;
   std::cout << std::fixed << std::setprecision(3);
-  std::cout << "Total time (in seconds) to apply dijkstra's algorithm: " << timeDif << '\n';
-  std::cout << "Enter name of of output file: ";
+  std::cout << "Total time (in seconds) to apply Dijkstra's algorithm: " << timeDif << '\n';
+  std::cout << "Enter name of output file: ";
   std::cin >> outputPath;
 
   std::ofstream outputFile(outputPath.c_str());

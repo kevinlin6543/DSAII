@@ -11,7 +11,6 @@
 
 class graph
 {
-
   public:
 
   graph();
@@ -22,7 +21,7 @@ class graph
   void insert(std::string, std::string, int);
 
   // Applies dijkstra algorithm on the graph
-  int dijkstra(std::string &startNode);
+  void dijkstra(std::string &startNode);
 
   // Writes to the output file from the paths vector of strings
   void outputGen(std::ofstream &outfile);
