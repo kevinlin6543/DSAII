@@ -4,68 +4,72 @@
 #include <algorithm>
 #include <fstream>
 
-std::string a, b, ab, file;
+std::string a, b, ab, input, output;
 int countA, countB, i;
-std::vector< std::vector<bool> > arr(40, std::vector<bool> (40));
+std::vector< std::vector<bool> > status(1001, std::vector<bool> (1001));
 
 int main()
 {
-  std::cout << "Enter File Name: ";
-  std::cin >> file;
-  std::ifstream infile(file);
+  std::cout << "Enter name of input file: ";
+  std::cin >> input;
+  std::cout << "Enter name of output file: ";
+  std::cin >> output;
+  std::ifstream infile(input);
+  std::ofstream outfile(output);
   while (infile >> a && infile >> b && infile >> ab)
   {
-    //std::cout << "a = " << a << " | length = " << a.length() << '\n';
-    //std::cout << "b = " << b << " | length = " << b.length() <<'\n';
-    //std::cout << "ab = "<< ab << " | length = " << ab.length() <<'\n';
-    i = 0;
-    countA = 0;
-    countB = 0;
-    while(i < ab.length() && (countA < a.length() || countB < b.length()))
-    {
-      //std::cerr << i << '\n';
-      //std::cerr << "count A = " << countA << '\n';
-      //std::cerr << "count B = " << countB << '\n';
-      if (i < 0)
-        break;
-      else if (ab[i] == a[countA] && !(arr[countA+1][countB]))
-      {
-        countA++;
-        arr[countA][countB] = true;
-      }
-      else if (ab[i] == b[countB] && !(arr[countA][countB+1]))
-      {
-        countB++;
-        arr[countA][countB] = true;
-      }
-      else
-      {
-        if (countA != 0 && arr[countA-1][countB])
-          countA--;
-        else if (countB != 0 && arr[countA][countB-1])
-          countB--;
-        else
-          break;
-        i--;
-        continue;
-      }
-      i++;
-    }
-    /*for (int i = 0; i < arr.size(); i++)
-    {
-      for (int j = 0; j < arr[i].size(); j++)
-      {
-          std::cout << arr[i][j] << " ";
-      }
-      std::cout << '\n';
-    }*/
-    //std::cerr << arr[a.length()][b.length()]<< '\n';
-    if(arr[a.length()][b.length()])
-      std::cerr << "Merge Detected" << '\n';
+    i = countA = countB = 0;
+    if (a.length() + b.length() != ab.length())
+      outfile << "*** NOT A MERGE ***" << '\n';
     else
-      std::cerr << "no merge" << '\n';
-    fill(arr.begin(), arr.end(), std::vector<bool> (40, false));
+    {
+      while(i < ab.length() && (countA < a.length() || countB < b.length()))
+      {
+        if (i < 0)
+          break;
+        else if (ab[i] == a[countA] && !(status[countA+1][countB]))
+        {
+          countA++;
+          status[countA][countB] = true;
+        }
+        else if (ab[i] == b[countB] && !(status[countA][countB+1]))
+        {
+          countB++;
+          status[countA][countB] = true;
+        }
+        else
+        {
+          if (countA != 0 && status[countA-1][countB])
+            countA--;
+          else if (countB != 0 && status[countA][countB-1])
+            countB--;
+          else
+            break;
+          i--;
+          continue;
+        }
+        i++;
+      }
+      if(status[a.length()][b.length()])
+      {
+        for (int j = ab.length()-1; j >= 0; j--)
+        {
+          if(status[countA-1][countB] || (countA == 1 && countB == 0))
+          {
+            ab[j] = toupper(ab[j]);
+            countA--;
+          }
+          else if (countB != 0 && status[countA][countB-1])
+            countB--;
+          else
+            break;
+          }
+          outfile << ab << '\n';
+        }
+      else
+        outfile << "*** NOT A MERGE ***" << '\n';
+      fill(status.begin(), status.end(), std::vector<bool> (1001, false));
+    }
   }
-
   return 0;
 }
